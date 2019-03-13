@@ -17,6 +17,9 @@ import java.util.logging.Logger;
  */
 public class FileNumberingFilterWriter extends FilterWriter {
 
+  private int numberOfLine = 1;
+  private boolean r = false; // detection of \r before \n
+
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
 
   public FileNumberingFilterWriter(Writer out) {
@@ -25,17 +28,42 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    write(str.toCharArray(), off, len);// convertion of string into chararray
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for (int i = 0; i < len; ++i) {
+      this.write(cbuf[off + i]);
+    }
   }
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    if (numberOfLine == 1) { //on first line, wee add the tabulation on the numberOfLine
+      out.write(numberOfLine + "\t");
+      ++numberOfLine;
+    }
+    if (r == true) { // if last caracter was a '\r', we check if there is a '\n'
+      if ((char) c != '\n') {
+        out.write(numberOfLine + "\t");
+        ++numberOfLine;
+      }
+    }
+
+    r = false;
+
+    if ((char) c == '\r') {
+      out.write('\r');
+      r = true;
+    } else {
+      out.write((char) c);
+      if (c == '\n') {
+        out.write(numberOfLine + "\t");
+        ++numberOfLine;
+      }
+    }
   }
 
 }
+
