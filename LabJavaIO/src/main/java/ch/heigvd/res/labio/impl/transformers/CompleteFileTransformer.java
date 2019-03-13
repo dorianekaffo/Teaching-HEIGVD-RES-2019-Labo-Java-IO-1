@@ -10,6 +10,8 @@ import java.io.Writer;
  * beginning of each line.
  * 
  * @author Olivier Liechti
+ *
+ * @author doriane kaffo Tedongmo
  */
 public class CompleteFileTransformer extends FileTransformer {
 
